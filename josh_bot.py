@@ -1,7 +1,9 @@
 from discord.ext import commands
 import os
+import json
 
-TOKEN = os.environ["DISCORD_BOT_TOKEN"]
+with open("credentials.json") as json_file:
+    CREDENTIALS = json.load(json_file)
 
 bot = commands.Bot(command_prefix=".")
 
@@ -13,7 +15,7 @@ if __name__ == "__main__":
     # Load the cogs
     print("[JoshBot] Loading cogs...")
 
-    for filename in os.listdir(os.path.dirname(__file__) + "/cogs"):
+    for filename in os.listdir(os.path.dirname(__file__) + "/cogs"):    
         if filename.endswith(".py"):
             extension = filename[:-3]  # Remove the .py from the filename
 
@@ -24,4 +26,4 @@ if __name__ == "__main__":
             except Exception as error:
                 print("[JoshBot] {} cannot be loaded. [{}]".format(extension, error))
 
-    bot.run(TOKEN)
+    bot.run(CREDENTIALS["DISCORD_BOT_TOKEN"])

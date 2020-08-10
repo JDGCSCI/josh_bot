@@ -101,8 +101,6 @@ class Music(commands.Cog):
         
         raw_matches = re.findall('(\{"metadataRowRenderer":.*?\})(?=,{"metadataRowRenderer")', r.text)
 
-        print(raw_matches) # Debugging purposes
-
         json_objects = [json.loads(m) for m in raw_matches if '{"simpleText":"Song"}' in m or '{"simpleText":"Artist"}' in m] # [Song Data, Artist Data]
 
         if len(json_objects) == 2:
@@ -316,9 +314,51 @@ class Music(commands.Cog):
             await ctx.send("The queue is empty!")
 
     @commands.command()
+    async def removelast(self, ctx):
+        if len(self.song_queue) >= 1:
+            removed_song = self.song_queue.pop()
+
+            song_removed_embed = discord.Embed(
+                title = removed_song["title"],
+                url = removed_song["url"],
+                colour = discord.Colour.purple()
+            )
+
+            song_removed_embed.set_author(name = "Removed From Queue", icon_url = "https://cdn1.iconfinder.com/data/icons/user-interface-44/48/Remove-512.png")
+            song_removed_embed.set_thumbnail(url = removed_song["thumbnail_url"])
+            song_removed_embed.set_footer(text = "Removed By {}".format(ctx.author), icon_url = ctx.author.avatar_url)
+
+            await ctx.send(embed = song_removed_embed)
+        else:
+            await ctx.send("The queue is empty!")
+
+    @commands.command()
+    async def removefirst(self, ctx):
+        if len(self.song_queue) >= 1:
+            removed_song = self.song_queue.popleft()
+
+            song_removed_embed = discord.Embed(
+                title = removed_song["title"],
+                url = removed_song["url"],
+                colour = discord.Colour.purple()
+            )
+
+            song_removed_embed.set_author(name = "Removed From Queue", icon_url = "https://cdn1.iconfinder.com/data/icons/user-interface-44/48/Remove-512.png")
+            song_removed_embed.set_thumbnail(url = removed_song["thumbnail_url"])
+            song_removed_embed.set_footer(text = "Removed By {}".format(ctx.author), icon_url = ctx.author.avatar_url)
+
+            await ctx.send(embed = song_removed_embed)
+        else:
+            await ctx.send("The queue is empty!")
+
+    @commands.command()
     async def playing(self, ctx):
         voice_client = ctx.voice_client
 
+        if voice_client is None:
+            await ctx.send("I am not in a voice channel!")
+            return
+            
         if voice_client.is_playing or voice_client.is_paused():
             currently_playing_embed = discord.Embed(
                 title = self.currently_playing["title"],

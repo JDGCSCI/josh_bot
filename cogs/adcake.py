@@ -2,7 +2,10 @@ from discord.ext import commands
 import requests
 import random
 import discord
-import os
+import json
+
+with open("credentials.json") as json_file:
+    CREDENTIALS = json.load(json_file)
 
 class ADCake(commands.Cog):
     def __init__(self, bot):
@@ -10,7 +13,7 @@ class ADCake(commands.Cog):
 
     @commands.command()
     async def adcake(self, ctx):
-        header = {"Client-ID": os.environ["TWITCH_API_CLIENT_ID"], "Authorization": "Bearer " + os.environ["TWITCH_API_APP_TOKEN"]}
+        header = {"Client-ID": CREDENTIALS["TWITCH_API_CLIENT_ID"], "Authorization": "Bearer " + CREDENTIALS["TWITCH_API_APP_TOKEN"]}
         r = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=83294945&first=100", headers = header)
         data = r.json()
 
