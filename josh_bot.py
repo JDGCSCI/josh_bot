@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Load the cogs
     print("[JoshBot] Loading cogs...")
 
-    for filename in os.listdir(os.path.dirname(__file__) + "/cogs"):    
+    for filename in os.listdir("./cogs"):    
         if filename.endswith(".py"):
             extension = filename[:-3]  # Remove the .py from the filename
 
